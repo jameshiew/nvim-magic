@@ -1,0 +1,9 @@
+{
+  "name": "Generate a docstring",
+  "description": "Generates a docstring for some given code (e.g. a function or class)",
+  "tags": {
+    "language": "The language of the code snippet being provided",
+    "snippet": "The code snippet itself"
+  },
+  "stop_code": "\n```"
+}

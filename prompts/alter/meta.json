@@ -1,0 +1,10 @@
+{
+  "name": "Make minor alteration",
+  "description": "Make a minor alteration to some code",
+  "tags": {
+    "language": "The language of the code snippet being provided",
+    "snippet": "The code snippet itself, ideally relatively short",
+    "task": "Succinct description of what alteration should be made"
+  },
+  "stop_code": "\n```"
+}

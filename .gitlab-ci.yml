@@ -1,0 +1,35 @@
+stages:
+  - build_ci
+  - lint
+
+variables:
+  DOCKER_TAG: 20.10.8
+
+nvim build:
+  image: docker:$DOCKER_TAG
+  services:
+    - docker:$DOCKER_TAG-dind
+  stage: build_ci
+  variables:
+    IMAGE: $CI_REGISTRY_IMAGE/ci
+    DIR: ci/
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $IMAGE:latest || true
+    - cd $DIR
+    - docker build --cache-from $CI_REGISTRY_IMAGE:latest -t $IMAGE:$CI_COMMIT_SHA -t $IMAGE:latest .
+    - docker push $IMAGE:$CI_COMMIT_SHA
+    - docker push $IMAGE:latest
+  only:
+    changes:
+      - ci/*
+
+lint:
+  image: $CI_REGISTRY_IMAGE/ci:latest
+  stage: lint
+  script:
+    - luacheck --version
+    - luacheck .
+    - stylua --version
+    # - stylua --verbose --check .  -- TODO: this hangs the CI container for some reason
+
