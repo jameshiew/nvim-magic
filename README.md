@@ -38,7 +38,7 @@ These keys are mapped for visual mode selections by default (though you can disa
 
 | keys | mode | action|
 |--|--|--|
-|<Leader>mcs| visual | Fetch and append completion|
-|<Leader>mss| visual | Ask for an alteration to the selected text|
-|<Leader>mds| visual | Generate a docstring|
+|`<Leader>mcs`| visual | Fetch and append completion|
+|`<Leader>mss`| visual | Ask for an alteration to the selected text|
+|`<Leader>mds`| visual | Generate a docstring|
 
