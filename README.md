@@ -4,9 +4,26 @@ A pluggable framework for integrating AI code assistance into Neovim. The goals 
 
 ## Features
 
-* Completion
-* Asking for an alteration
-* Generating a docstring
+### Completion
+
+<img 
+	alt='Example of Python script being generated from a docstring'
+	src='docs/gifs/completion.gif'
+	/>
+
+### Generating a docstring
+
+<img 
+	alt='Example of Python function having a docstring generated'
+	src='docs/gifs/docstring.gif'
+	/>
+
+### Asking for an alteration
+
+<img 
+	alt='Example of Python function being altered'
+	src='docs/gifs/suggest.gif'
+	/>
 
 ## Quickstart
 
