@@ -44,9 +44,11 @@ end
 
 -- should be called while in visual mode only
 function M.get_visual_start_end()
-	-- NB: switches to normal mode then back to visual mode to ensure marks are current
-	vim.api.nvim_feedkeys(ESC_FEEDKEY, 'v', true)
-	vim.cmd('normal! gv')
+	-- NB: switches out of visual mode then back again to ensure marks are current
+	vim.api.nvim_feedkeys(ESC_FEEDKEY, 'n', true)
+	vim.api.nvim_feedkeys('gv', 'x', false)
+	vim.api.nvim_feedkeys(ESC_FEEDKEY, 'n', true)
+
 	local _, start_row, start_col, _ = unpack(vim.fn.getpos("'<"))
 	local _, end_row, end_col, _ = unpack(vim.fn.getpos("'>"))
 
