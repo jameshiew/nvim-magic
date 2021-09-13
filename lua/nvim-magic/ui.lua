@@ -6,7 +6,7 @@ local Popup = require('nui.popup')
 local event = require('nui.utils.autocmd').event
 
 function M.notify(msg, log_level, opts)
-	vim.notify('nvim-magic: ' .. msg)
+	vim.notify('nvim-magic: ' .. msg, log_level, opts)
 end
 
 function M.pop_up(lines, filetype, border_text, keymaps)
