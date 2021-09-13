@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+###
+* Use vim.notify instead of print for info messages
+
 ### Fixed
 * Using a default keymap in a buffer should work first time rather than just deselecting the current visual selection [#2](https://github.com/jameshiew/nvim-magic/issues/2)
 

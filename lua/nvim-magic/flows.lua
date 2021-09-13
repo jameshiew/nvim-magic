@@ -23,7 +23,7 @@ function M.append_completion(backend, max_tokens, stops)
 
 	local visual_lines, _, _, end_row, end_col = buffer.get_visual_lines()
 	if not visual_lines then
-		ui.print('nothing selected')
+		ui.notify('nothing selected')
 		return
 	end
 
@@ -33,7 +33,7 @@ function M.append_completion(backend, max_tokens, stops)
 
 	buffer.append(0, end_row, end_col, compl_lines)
 
-	ui.print('appended ' .. tostring(#compl_text) .. ' characters')
+	ui.notify('appended ' .. tostring(#compl_text) .. ' characters')
 end
 
 function M.suggest_alteration(backend, language)
@@ -48,7 +48,7 @@ function M.suggest_alteration(backend, language)
 
 	local visual_lines, start_row, start_col, end_row, end_col = buffer.get_visual_lines()
 	if not visual_lines then
-		ui.print('nothing selected')
+		ui.notify('nothing selected')
 		return
 	end
 
@@ -123,7 +123,7 @@ function M.suggest_docstring(backend, language) -- TODO: use docstring prompt
 
 	local vis_lines, start_row, start_col, end_row, end_col = buffer.get_visual_lines()
 	if not vis_lines then
-		ui.print('nothing selected')
+		ui.notify('nothing selected')
 		return
 	end
 

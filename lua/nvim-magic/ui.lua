@@ -5,9 +5,8 @@ local Input = require('nui.input')
 local Popup = require('nui.popup')
 local event = require('nui.utils.autocmd').event
 
-function M.print(msg)
-	assert(type(msg) == 'string', 'msg must be a string')
-	print('nvim-magic: ' .. msg)
+function M.notify(msg, log_level, opts)
+	vim.notify('nvim-magic: ' .. msg)
 end
 
 function M.pop_up(lines, filetype, border_text, keymaps)
