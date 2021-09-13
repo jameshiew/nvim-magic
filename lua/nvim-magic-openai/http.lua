@@ -1,8 +1,8 @@
 local M = {}
 
+local curl = require('nvim-magic-openai.curl')
 local random = require('nvim-magic-openai.random')
 
-local curl = require('plenary.curl')
 
 local ClientMethods = {}
 
@@ -16,7 +16,7 @@ function ClientMethods:post(api_endpoint, json_body, api_key)
 		headers = {
 			content_type = 'application/json',
 		},
-		timeout = 30000, -- milliseconds TODO: currently requires a fork of plenary
+		timeout = 30000, -- milliseconds
 	}
 	assert(req.auth == nil, 'auth details should be added only after caching!')
 
