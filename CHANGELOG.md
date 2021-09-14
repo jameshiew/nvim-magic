@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 * Using a default keymap in a buffer should work first time rather than just deselecting the current visual selection ([#2](https://github.com/jameshiew/nvim-magic/issues/2))
+* OpenAI API key should no longer leak in an error message when `curl` times out, rather a generic request timed out error message is shown
 
 ## [0.1.0] - 2021-09-13
 
