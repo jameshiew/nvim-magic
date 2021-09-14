@@ -39,6 +39,7 @@ all curl methods accepts
   dry_run    = "whether to return the args to be ran through curl." (boolean)
   output     = "where to download something." (filepath)
   timeout    = "timeout in milliseconds for synchronous requests" (number)
+  return_job = "whether to return the Job and a function which can be called to check the response" (boolean)
 
 and returns table:
 
@@ -258,8 +259,18 @@ parse.response = function(lines, dump_path, code)
 	}
 end
 
+local curl_job = function(args, dump_path, callback)
+	return J:new({
+		command = 'curl',
+		args = args,
+		on_exit = function(j, code)
+			local output = parse.response(j:result(), dump_path, code)
+			callback(output)
+		end,
+	})
+end
+
 local request = function(specs)
-	local response = {}
 	local args, opts = parse.request(vim.tbl_extend('force', {
 		compressed = true,
 		dry_run = false,
@@ -270,18 +281,23 @@ local request = function(specs)
 		return args
 	end
 
-	local job = J:new({
-		command = 'curl',
-		args = args,
-		on_exit = function(j, code)
-			local output = parse.response(j:result(), opts.dump[2], code)
-			if opts.callback then
-				return opts.callback(output)
-			else
-				response = output
-			end
-		end,
-	})
+	local response
+	local cb
+	if opts.callback then
+		cb = opts.callback
+	else
+		cb = function(output)
+			response = output
+		end
+	end
+
+	local job = curl_job(args, opts.dump[2], cb)
+
+	if opts.return_job then
+		return job, function()
+			return response
+		end
+	end
 
 	if opts.callback then
 		return job:start()

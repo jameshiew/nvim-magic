@@ -4,8 +4,10 @@ local log = require('nvim-magic.log')
 
 local ESC_FEEDKEY = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
 
-function M.current_get_handle()
-	return vim.api.nvim_win_get_buf(vim.api.nvim_get_current_win())
+function M.get_handles()
+	local winnr = vim.api.nvim_get_current_win()
+	local bufnr = vim.api.nvim_win_get_buf(winnr)
+	return bufnr, winnr
 end
 
 function M.get_filetype(bufnr)
