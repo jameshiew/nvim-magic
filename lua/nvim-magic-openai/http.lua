@@ -3,7 +3,6 @@ local M = {}
 local curl = require('nvim-magic-openai.curl')
 local random = require('nvim-magic-openai.random')
 
-
 local ClientMethods = {}
 
 function ClientMethods:post(api_endpoint, json_body, api_key)
