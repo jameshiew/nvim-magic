@@ -3,31 +3,12 @@ local M = {}
 local fs = require('nvim-magic.fs')
 local log = require('nvim-magic.log')
 
+local lustache = require('nvim-magic.vendor.lustache.src.lustache')
+
 local TemplateMethods = {}
 
--- TODO: replace with an actual mustache implementation e.g. lustache - this only (probably) works for simple tags
 function TemplateMethods:fill(values)
-	local filled = self.template
-
-	-- a real mustache implementation won't have this issue of having to check for strings
-	-- which might get accidentally substituted
-	local substs = {}
-	for k, _ in pairs(values) do
-		table.insert(substs, '{{' .. tostring(k) .. '}}')
-	end
-	for _, s in pairs(substs) do
-		for k, v in pairs(values) do
-			if v:find(s) ~= nil then
-				error('found ' .. s .. " in '" .. k .. "' value, cannot continue for this template")
-			end
-		end
-	end
-
-	for k, v in pairs(values) do
-		local subst = '{{' .. tostring(k) .. '}}'
-		filled = filled:gsub(subst, v, 1)
-	end
-	return filled
+	return lustache:render(self.template, values)
 end
 
 local TemplateMt = { __index = TemplateMethods }
