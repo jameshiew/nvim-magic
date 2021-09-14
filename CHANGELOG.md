@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.2.1] - 2021-09-14
+
+### Changed
+* Disable requesting compressed HTTP responses on Windows as possibly it is less likely to be supported by Windows' `curl`s
+
+### Fixed
+* Send an appropriate Vim notification in more cases when `curl` terminates with nonzero exit code, rather than raising a plenary.path error
+* Prevent logspam when OpenAI returns a non-200 HTTP status that was caused by a timer not being closed properly
+
 ## [0.2.0] - 2021-09-14
 
 ### Changed
@@ -15,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 * Using a default keymap in a buffer should work first time rather than just deselecting the current visual selection ([#2](https://github.com/jameshiew/nvim-magic/issues/2))
+* OpenAI API key should no longer leak in an error message when `curl` times out, rather a generic request timed out error message is shown
 
 ## [0.1.0] - 2021-09-13
 

@@ -64,6 +64,14 @@ local P = require('plenary.path')
 
 local DEFAULT_TIMEOUT = 10000 -- milliseconds
 
+local function is_windows()
+	return P.path.sep == '\\'
+end
+
+local function default_compressed()
+	return not is_windows() -- it may be more common on Windows for curl to be installed without compression support
+end
+
 -- Utils ----------------------------------------------------
 -------------------------------------------------------------
 
@@ -101,7 +109,7 @@ util.gen_dump_path = function()
 		local v = (l == 'x') and math.random(0, 0xf) or math.random(0, 0xb)
 		return string.format('%x', v)
 	end)
-	if P.path.sep == '\\' then
+	if is_windows() then
 		path = string.format('%s\\AppData\\Local\\Temp\\plenary_curl_%s.headers', os.getenv('USERPROFILE'), id)
 	else
 		path = '/tmp/plenary_curl_' .. id .. '.headers'
@@ -264,6 +272,13 @@ local curl_job = function(args, dump_path, callback)
 		command = 'curl',
 		args = args,
 		on_exit = function(j, code)
+			if code ~= 0 then
+				callback(
+					nil,
+					'curl exited with code=' .. tostring(code) .. ' stderr=' .. vim.inspect(j:stderr_result())
+				)
+				return
+			end
 			local output = parse.response(j:result(), dump_path, code)
 			callback(output)
 		end,
@@ -272,7 +287,7 @@ end
 
 local request = function(specs)
 	local args, opts = parse.request(vim.tbl_extend('force', {
-		compressed = true,
+		compressed = default_compressed(),
 		dry_run = false,
 		dump = util.gen_dump_path(),
 	}, specs))
@@ -283,10 +298,14 @@ local request = function(specs)
 
 	local response
 	local cb
+	local errmsg
 	if opts.callback then
 		cb = opts.callback
 	else
-		cb = function(output)
+		cb = function(output, error_msg)
+			if error_msg then
+				errmsg = error_msg
+			end
 			response = output
 		end
 	end
@@ -295,7 +314,7 @@ local request = function(specs)
 
 	if opts.return_job then
 		return job, function()
-			return response
+			return response, errmsg
 		end
 	end
 

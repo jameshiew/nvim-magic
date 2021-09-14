@@ -21,4 +21,3 @@ Be aware of the following:
 
 Since the API key is passed as an environment variable to Neovim, it could be exposed to other processes. It will be visible if the environment of the Neovim process is inspected using something like `htop`, for example.
 
-The error message echoed in Neovim when a completion request times out includes the API key, as it is passed to the underlying `curl` command on the command line.
