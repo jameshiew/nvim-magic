@@ -21,10 +21,7 @@ function M.setup(override)
 			assert(type(override.backends) == 'table', 'backends must be an array of backends')
 			assert(type(override.backends.default) == 'table', 'backends must be an array of backends')
 			for name, backend in pairs(override.backends) do
-				assert(
-					type(backend.complete_sync) == 'function',
-					'backend ' .. name .. ' needs a complete_sync function'
-				)
+				assert(type(backend.complete) == 'function', 'backend ' .. name .. ' needs a complete function')
 			end
 			config.backends = override.backends
 		end

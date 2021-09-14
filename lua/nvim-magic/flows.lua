@@ -10,6 +10,7 @@ local ui = require('nvim-magic.ui')
 
 function M.append_completion(backend, max_tokens, stops)
 	assert(backend ~= nil, 'backend must be provided')
+	local bufnr, winnr = buffer.get_handles()
 	if max_tokens ~= nil then
 		assert(type(max_tokens) == 'number', 'max tokens must be a number')
 		assert(1 <= max_tokens, 'max tokens must be at least 1')
@@ -28,23 +29,31 @@ function M.append_completion(backend, max_tokens, stops)
 	end
 
 	log.fmt_debug('Fetching completion max_tokens=%s stops=%s', max_tokens, vim.inspect(stops))
-	local compl_text = backend:complete_sync(visual_lines, max_tokens, stops)
-	local compl_lines = vim.split(compl_text, '\n', true)
+	ui.notify('fetching completion...')
+	backend:complete(visual_lines, max_tokens, stops, function(completion)
+		local compl_lines = vim.split(completion, '\n', true)
 
-	buffer.append(0, end_row, end_col, compl_lines)
+		buffer.append(bufnr, end_row, end_col, compl_lines) -- TODO: use extmarks
+		vim.api.nvim_set_current_win(winnr)
+		vim.api.nvim_set_current_buf(bufnr)
+		vim.api.nvim_win_set_cursor(0, { end_row, end_col }) -- TODO: use specific window
 
-	ui.notify('appended ' .. tostring(#compl_text) .. ' characters')
+		ui.notify('appended completion (' .. tostring(#completion) .. ' characters)', 'info')
+	end, function(errmsg)
+		ui.notify(errmsg)
+	end)
 end
 
 function M.suggest_alteration(backend, language)
 	assert(backend ~= nil, 'backend must be provided')
+	local bufnr, winnr = buffer.get_handles()
 	if language == nil then
 		language = buffer.get_filetype()
 	else
 		assert(type(language) == 'string', 'language must be a string')
 	end
 
-	local orig_buf = buffer.current_get_handle()
+	local orig_bufnr, _ = buffer.get_handles()
 
 	local visual_lines, start_row, start_col, end_row, end_col = buffer.get_visual_lines()
 	if not visual_lines then
@@ -68,58 +77,70 @@ function M.suggest_alteration(backend, language)
 		local stops = { tmpl.stop_code }
 
 		log.fmt_debug('Fetching alteration max_tokens=%s stops=%s', max_tokens, vim.inspect(stops))
-		local compl = backend:complete_sync(prompt_lines, max_tokens, stops)
-		local compl_lines = vim.split(compl, '\n', true)
+		ui.notify('fetching alteration...')
+		backend:complete(prompt_lines, max_tokens, stops, function(completion)
+			local compl_lines = vim.split(completion, '\n', true)
+			vim.api.nvim_set_current_win(winnr)
+			vim.api.nvim_set_current_buf(bufnr)
 
-		ui.pop_up(
-			compl_lines,
-			language,
-			{
-				top = 'Suggested alteration',
-				top_align = 'center',
-				bottom = '[a] - append | [p] paste over',
-				bottom_align = 'left',
-			},
-			vim.list_extend(keymaps.get_quick_quit(), {
+			ui.pop_up(
+				compl_lines,
+				language,
 				{
-					'n',
-					'a', -- append to original buffer
-					function(_)
-						buffer.append(orig_buf, end_row, end_col, compl_lines)
-						vim.api.nvim_win_close(0, true)
-					end,
-					{ noremap = true },
+					top = 'Suggested alteration',
+					top_align = 'center',
+					bottom = '[a] - append | [p] paste over',
+					bottom_align = 'left',
 				},
-				{
-					'n',
-					'p', -- replace in original buffer
-					function(_)
-						vim.api.nvim_buf_set_text(
-							orig_buf,
-							start_row - 1,
-							start_col - 1,
-							end_row - 1,
-							end_col - 1,
-							compl_lines
-						)
-						vim.api.nvim_win_close(0, true)
-					end,
-					{ noremap = true },
-				},
-			})
-		)
+				vim.list_extend(keymaps.get_quick_quit(), {
+					{
+						'n',
+						'a', -- append to original buffer
+						function(_)
+							buffer.append(orig_bufnr, end_row, end_col, compl_lines)
+							vim.api.nvim_win_close(0, true)
+							ui.notify('appended suggested code (' .. tostring(#completion) .. ' characters)', 'info')
+						end,
+						{ noremap = true },
+					},
+					{
+						'n',
+						'p', -- replace in original buffer
+						function(_)
+							vim.api.nvim_buf_set_text(
+								orig_bufnr,
+								start_row - 1,
+								start_col - 1,
+								end_row - 1,
+								end_col - 1,
+								compl_lines
+							)
+							vim.api.nvim_win_close(0, true)
+							ui.notify(
+								'replaced code with suggested code (' .. tostring(#completion) .. ' characters)',
+								'info'
+							)
+						end,
+						{ noremap = true },
+					},
+				})
+			)
+		end, function(errmsg)
+			ui.notify(errmsg)
+		end)
 	end)
 end
 
 function M.suggest_docstring(backend, language)
 	assert(backend ~= nil, 'backend must be provided')
+	local bufnr, winnr = buffer.get_handles()
 	if language == nil then
 		language = buffer.get_filetype()
 	else
 		assert(type(language) == 'string', 'language must be a string')
 	end
 
-	local orig_buf = buffer.current_get_handle()
+	local orig_bufnr, _ = buffer.get_handles()
 
 	local vis_lines, start_row, start_col, end_row, end_col = buffer.get_visual_lines()
 	if not vis_lines then
@@ -141,46 +162,57 @@ function M.suggest_docstring(backend, language)
 	local stops = { tmpl.stop_code }
 
 	log.fmt_debug('Fetching docstring max_tokens=%s stops=%s', max_tokens, tostring(stops))
-	local compl = backend:complete_sync(prompt_lines, max_tokens, stops)
-	local compl_lines = vim.split(compl, '\n', true)
+	ui.notify('fetching docstring...')
+	backend:complete(prompt_lines, max_tokens, stops, function(completion)
+		local compl_lines = vim.split(completion, '\n', true)
+		vim.api.nvim_set_current_win(winnr)
+		vim.api.nvim_set_current_buf(bufnr)
 
-	ui.pop_up(
-		compl_lines,
-		language,
-		{
-			top = 'Suggested alteration',
-			top_align = 'center',
-			bottom = '[a] - append | [p] paste over',
-			bottom_align = 'left',
-		},
-		vim.list_extend(keymaps.get_quick_quit(), {
+		ui.pop_up(
+			compl_lines,
+			language,
 			{
-				'n',
-				'a', -- append to original buffer
-				function(_)
-					buffer.append(orig_buf, end_row, end_col, compl_lines)
-					vim.api.nvim_win_close(0, true)
-				end,
-				{ noremap = true },
+				top = 'Suggested alteration',
+				top_align = 'center',
+				bottom = '[a] - append | [p] paste over',
+				bottom_align = 'left',
 			},
-			{
-				'n',
-				'p', -- replace in original buffer
-				function(_)
-					vim.api.nvim_buf_set_text(
-						orig_buf,
-						start_row - 1,
-						start_col - 1,
-						end_row - 1,
-						end_col - 1,
-						compl_lines
-					)
-					vim.api.nvim_win_close(0, true)
-				end,
-				{ noremap = true },
-			},
-		})
-	)
+			vim.list_extend(keymaps.get_quick_quit(), {
+				{
+					'n',
+					'a', -- append to original buffer
+					function(_)
+						buffer.append(orig_bufnr, end_row, end_col, compl_lines)
+						vim.api.nvim_win_close(0, true)
+						ui.notify('appended suggested code (' .. tostring(#completion) .. ' characters)', 'info')
+					end,
+					{ noremap = true },
+				},
+				{
+					'n',
+					'p', -- replace in original buffer
+					function(_)
+						vim.api.nvim_buf_set_text(
+							orig_bufnr,
+							start_row - 1,
+							start_col - 1,
+							end_row - 1,
+							end_col - 1,
+							compl_lines
+						)
+						vim.api.nvim_win_close(0, true)
+						ui.notify(
+							'replaced code with suggested code (' .. tostring(#completion) .. ' characters)',
+							'info'
+						)
+					end,
+					{ noremap = true },
+				},
+			})
+		)
+	end, function(errmsg)
+		ui.notify(errmsg)
+	end)
 end
 
 return M

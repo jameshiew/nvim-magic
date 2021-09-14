@@ -3,9 +3,11 @@ local M = {}
 local curl = require('nvim-magic-openai.curl')
 local random = require('nvim-magic-openai.random')
 
+local DEFAULT_TIMEOUT_MILLI = 30000
+
 local ClientMethods = {}
 
-function ClientMethods:post(api_endpoint, json_body, api_key)
+function ClientMethods:post(api_endpoint, json_body, api_key, success, fail)
 	assert(type(api_key) == 'string', 'API key must be a string')
 	assert(api_key ~= nil and api_key ~= '', 'empty API key')
 
@@ -15,30 +17,61 @@ function ClientMethods:post(api_endpoint, json_body, api_key)
 		headers = {
 			content_type = 'application/json',
 		},
-		timeout = 30000, -- milliseconds
+		return_job = true, -- TODO: currently requires a fork of plenary
 	}
-	assert(req.auth == nil, 'auth details should be added only after caching!')
 
 	local id = random.generate_timestamped_string()
 
 	local req_filename = id .. '-request.json'
 	local req_json = vim.fn.json_encode(req)
+	assert(req.auth == nil, 'auth details should be added only after caching!')
 	self.cache:save(req_filename, req_json)
 
 	-- using basic auth instead of bearer auth because plenary.curl doesn't support bearer auth rn
 	req.auth = ':' .. api_key
 
-	local res = curl.post(api_endpoint, req)
+	local job, res_fn = curl.post(api_endpoint, req)
+	job:start()
 
-	local res_filename = id .. '-response.json'
-	local res_json = vim.fn.json_encode(res)
-	self.cache:save(res_filename, res_json)
+	local timer = vim.loop.new_timer()
+	local interval_ms = 100
+	local elapsed_ms = 0
+	timer:start(
+		0,
+		interval_ms,
+		vim.schedule_wrap(function()
+			local res = res_fn()
+			if res then
+				local res_filename = id .. '-response.json'
+				local res_json = vim.fn.json_encode(res)
+				self.cache:save(res_filename, res_json)
 
-	assert(type(res.exit) == 'number')
-	assert(res.exit == 0, 'curl call failed with exit code ' .. tostring(res.exit))
+				assert(type(res.exit) == 'number')
+				if res.exit ~= 0 then
+					fail('curl call failed with exit code ' .. tostring(res.exit))
+					timer:close()
+					return
+				end
 
-	assert(res.status == 200, 'non-200 HTTP status = see ' .. res_json .. ' for raw response')
-	return res.body
+				if res.status ~= 200 then
+					fail('non-200 HTTP status = see ' .. res_json .. ' for raw response')
+					timer:close()
+					return
+				end
+
+				success(res.body)
+				timer:close()
+				return
+			end
+
+			elapsed_ms = elapsed_ms + interval_ms
+			if elapsed_ms > DEFAULT_TIMEOUT_MILLI then
+				fail('timed out after ' + tostring(DEFAULT_TIMEOUT_MILLI) + ' milliseconds')
+				timer:close()
+				return
+			end
+		end)
+	)
 end
 
 local ClientMt = { __index = ClientMethods }
