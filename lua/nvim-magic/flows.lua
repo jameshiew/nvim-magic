@@ -8,9 +8,18 @@ local log = require('nvim-magic.log')
 local templates = require('nvim-magic.templates')
 local ui = require('nvim-magic.ui')
 
+local function notify_prefix(filename)
+	local prefix
+	if 1 <= #filename then
+		prefix = string.format('%s - ', filename)
+	else
+		prefix = '(buffer) -'
+	end
+	return prefix
+end
+
 function M.append_completion(backend, max_tokens, stops)
 	assert(backend ~= nil, 'backend must be provided')
-	local bufnr, winnr = buffer.get_handles()
 	if max_tokens ~= nil then
 		assert(type(max_tokens) == 'number', 'max tokens must be a number')
 		assert(1 <= max_tokens, 'max tokens must be at least 1')
@@ -22,42 +31,47 @@ function M.append_completion(backend, max_tokens, stops)
 		assert(type(stops[1]) == 'string', 'stop must be an array of strings')
 	end
 
+	local orig_bufnr, orig_winnr = buffer.get_handles()
+	local filename = buffer.get_filename()
+	local nprefix = notify_prefix(filename)
+
 	local visual_lines, _, _, end_row, end_col = buffer.get_visual_lines()
 	if not visual_lines then
-		ui.notify('nothing selected')
+		ui.notify(nprefix .. 'nothing selected')
 		return
 	end
 
 	log.fmt_debug('Fetching completion max_tokens=%s stops=%s', max_tokens, vim.inspect(stops))
-	ui.notify('fetching completion...')
+	ui.notify(nprefix .. 'fetching completion...')
 	backend:complete(visual_lines, max_tokens, stops, function(completion)
 		local compl_lines = vim.split(completion, '\n', true)
 
-		buffer.append(bufnr, end_row, end_col, compl_lines) -- TODO: use extmarks
-		vim.api.nvim_set_current_win(winnr)
-		vim.api.nvim_set_current_buf(bufnr)
+		buffer.append(orig_bufnr, end_row, end_col, compl_lines) -- TODO: use extmarks
+		vim.api.nvim_set_current_win(orig_winnr)
+		vim.api.nvim_set_current_buf(orig_bufnr)
 		vim.api.nvim_win_set_cursor(0, { end_row, end_col }) -- TODO: use specific window
 
-		ui.notify('appended completion (' .. tostring(#completion) .. ' characters)', 'info')
+		ui.notify(nprefix .. 'fetched completion (' .. tostring(#completion) .. ' characters)', 'info')
 	end, function(errmsg)
-		ui.notify(errmsg)
+		ui.notify(nprefix .. errmsg)
 	end)
 end
 
 function M.suggest_alteration(backend, language)
 	assert(backend ~= nil, 'backend must be provided')
-	local bufnr, winnr = buffer.get_handles()
 	if language == nil then
 		language = buffer.get_filetype()
 	else
 		assert(type(language) == 'string', 'language must be a string')
 	end
 
-	local orig_bufnr, _ = buffer.get_handles()
+	local orig_bufnr, orig_winnr = buffer.get_handles()
+	local filename = buffer.get_filename()
+	local nprefix = notify_prefix(filename)
 
 	local visual_lines, start_row, start_col, end_row, end_col = buffer.get_visual_lines()
 	if not visual_lines then
-		ui.notify('nothing selected')
+		ui.notify(nprefix .. 'nothing selected')
 		return
 	end
 
@@ -77,11 +91,12 @@ function M.suggest_alteration(backend, language)
 		local stops = { tmpl.stop_code }
 
 		log.fmt_debug('Fetching alteration max_tokens=%s stops=%s', max_tokens, vim.inspect(stops))
-		ui.notify('fetching alteration...')
+		ui.notify(nprefix .. string.format('fetching suggested alteration (task=%s)', task))
 		backend:complete(prompt_lines, max_tokens, stops, function(completion)
+			ui.notify(nprefix .. 'fetched suggested alteration (' .. tostring(#completion) .. ' characters)', 'info')
 			local compl_lines = vim.split(completion, '\n', true)
-			vim.api.nvim_set_current_win(winnr)
-			vim.api.nvim_set_current_buf(bufnr)
+			vim.api.nvim_set_current_win(orig_winnr)
+			vim.api.nvim_set_current_buf(orig_bufnr)
 
 			ui.pop_up(
 				compl_lines,
@@ -99,7 +114,6 @@ function M.suggest_alteration(backend, language)
 						function(_)
 							buffer.append(orig_bufnr, end_row, end_col, compl_lines)
 							vim.api.nvim_win_close(0, true)
-							ui.notify('appended suggested code (' .. tostring(#completion) .. ' characters)', 'info')
 						end,
 						{ noremap = true },
 					},
@@ -116,35 +130,32 @@ function M.suggest_alteration(backend, language)
 								compl_lines
 							)
 							vim.api.nvim_win_close(0, true)
-							ui.notify(
-								'replaced code with suggested code (' .. tostring(#completion) .. ' characters)',
-								'info'
-							)
 						end,
 						{ noremap = true },
 					},
 				})
 			)
 		end, function(errmsg)
-			ui.notify(errmsg)
+			ui.notify(nprefix .. errmsg)
 		end)
 	end)
 end
 
 function M.suggest_docstring(backend, language)
 	assert(backend ~= nil, 'backend must be provided')
-	local bufnr, winnr = buffer.get_handles()
 	if language == nil then
 		language = buffer.get_filetype()
 	else
 		assert(type(language) == 'string', 'language must be a string')
 	end
 
-	local orig_bufnr, _ = buffer.get_handles()
+	local orig_bufnr, orig_winnr = buffer.get_handles()
+	local filename = buffer.get_filename()
+	local nprefix = notify_prefix(filename)
 
 	local vis_lines, start_row, start_col, end_row, end_col = buffer.get_visual_lines()
 	if not vis_lines then
-		ui.notify('nothing selected')
+		ui.notify(nprefix .. 'nothing selected')
 		return
 	end
 
@@ -162,11 +173,12 @@ function M.suggest_docstring(backend, language)
 	local stops = { tmpl.stop_code }
 
 	log.fmt_debug('Fetching docstring max_tokens=%s stops=%s', max_tokens, tostring(stops))
-	ui.notify('fetching docstring...')
+	ui.notify(nprefix .. 'fetching suggested docstring...')
 	backend:complete(prompt_lines, max_tokens, stops, function(completion)
+		ui.notify(nprefix .. 'fetched suggested docstring (' .. tostring(#completion) .. ' characters)', 'info')
 		local compl_lines = vim.split(completion, '\n', true)
-		vim.api.nvim_set_current_win(winnr)
-		vim.api.nvim_set_current_buf(bufnr)
+		vim.api.nvim_set_current_win(orig_winnr)
+		vim.api.nvim_set_current_buf(orig_bufnr)
 
 		ui.pop_up(
 			compl_lines,
@@ -184,7 +196,6 @@ function M.suggest_docstring(backend, language)
 					function(_)
 						buffer.append(orig_bufnr, end_row, end_col, compl_lines)
 						vim.api.nvim_win_close(0, true)
-						ui.notify('appended suggested code (' .. tostring(#completion) .. ' characters)', 'info')
 					end,
 					{ noremap = true },
 				},
@@ -201,17 +212,13 @@ function M.suggest_docstring(backend, language)
 							compl_lines
 						)
 						vim.api.nvim_win_close(0, true)
-						ui.notify(
-							'replaced code with suggested code (' .. tostring(#completion) .. ' characters)',
-							'info'
-						)
 					end,
 					{ noremap = true },
 				},
 			})
 		)
 	end, function(errmsg)
-		ui.notify(errmsg)
+		ui.notify(nprefix .. errmsg)
 	end)
 end
 
