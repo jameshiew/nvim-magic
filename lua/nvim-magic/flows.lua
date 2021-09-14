@@ -111,7 +111,7 @@ function M.suggest_alteration(backend, language)
 	end)
 end
 
-function M.suggest_docstring(backend, language) -- TODO: use docstring prompt
+function M.suggest_docstring(backend, language)
 	assert(backend ~= nil, 'backend must be provided')
 	if language == nil then
 		language = buffer.get_filetype()
