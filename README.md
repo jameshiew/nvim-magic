@@ -43,9 +43,9 @@ use({
 	config = function()
 		require('nvim-magic').setup()
 	end,
-	tag = 'v0.1.0',  -- recommended to pin to a tag and update manually as there may be breaking changes
+	tag = 'v0.2.0',  -- recommended to pin to a tag and update manually as there may be breaking changes
 	requires = {
-		'jameshiew/plenary.nvim',  -- fork of nvim-lua/plenary.nvim which allows a longer request timeout, the original can be used if wanted
+		'nvim-lua/plenary.nvim',
 		'MunifTanjim/nui.nvim'
 	}
 })
