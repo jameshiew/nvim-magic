@@ -48,26 +48,26 @@ function ClientMethods:post(api_endpoint, json_body, api_key, success, fail)
 
 				assert(type(res.exit) == 'number')
 				if res.exit ~= 0 then
-					fail('curl call failed with exit code ' .. tostring(res.exit))
 					timer:close()
+					fail('curl call failed exit_code=' .. tostring(res.exit))
 					return
 				end
 
 				if res.status ~= 200 then
-					fail('non-200 HTTP status = see ' .. res_json .. ' for raw response')
 					timer:close()
+					fail('non-200 HTTP status response=' .. res_json)
 					return
 				end
 
-				success(res.body)
 				timer:close()
+				success(res.body)
 				return
 			end
 
 			elapsed_ms = elapsed_ms + interval_ms
 			if elapsed_ms > DEFAULT_TIMEOUT_MILLI then
-				fail('timed out after ' + tostring(DEFAULT_TIMEOUT_MILLI) + ' milliseconds')
 				timer:close()
+				fail('timed out after milliseconds=' .. tostring(DEFAULT_TIMEOUT_MILLI))
 				return
 			end
 		end)
