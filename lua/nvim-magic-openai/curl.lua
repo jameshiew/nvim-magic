@@ -264,6 +264,10 @@ local curl_job = function(args, dump_path, callback)
 		command = 'curl',
 		args = args,
 		on_exit = function(j, code)
+			if code ~= 0 then
+				callback(nil, 'curl exited with code=' .. tostring(code))
+				return
+			end
 			local output = parse.response(j:result(), dump_path, code)
 			callback(output)
 		end,
@@ -283,10 +287,14 @@ local request = function(specs)
 
 	local response
 	local cb
+	local errmsg
 	if opts.callback then
 		cb = opts.callback
 	else
-		cb = function(output)
+		cb = function(output, error_msg)
+			if error_msg then
+				errmsg = error_msg
+			end
 			response = output
 		end
 	end
@@ -295,7 +303,7 @@ local request = function(specs)
 
 	if opts.return_job then
 		return job, function()
-			return response
+			return response, errmsg
 		end
 	end
 
@@ -309,7 +317,7 @@ local request = function(specs)
 			timeout = DEFAULT_TIMEOUT
 		end
 		job:sync(timeout)
-		return response
+		return response, errmsg
 	end
 end
 

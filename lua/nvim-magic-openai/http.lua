@@ -40,7 +40,12 @@ function ClientMethods:post(api_endpoint, json_body, api_key, success, fail)
 		0,
 		interval_ms,
 		vim.schedule_wrap(function()
-			local res = res_fn()
+			local res, errmsg = res_fn()
+			if errmsg then
+				timer:close()
+				fail('error: ' .. errmsg)
+				return
+			end
 			if res then
 				local res_filename = id .. '-response.json'
 				local res_json = vim.fn.json_encode(res)
