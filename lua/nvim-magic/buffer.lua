@@ -10,6 +10,10 @@ function M.get_handles()
 	return bufnr, winnr
 end
 
+function M.get_filename()
+	return vim.fn.expand('%:t')
+end
+
 function M.get_filetype(bufnr)
 	if bufnr == nil then
 		bufnr = 0
