@@ -3,7 +3,7 @@ local M = {}
 function M.new_request(prompt, max_tokens, stops)
 	assert(type(prompt) == 'string', 'prompt must be a string')
 	assert(type(max_tokens) == 'number', 'max tokens must be a number')
-	if stops ~= nil then
+	if stops then
 		assert(type(stops) == 'table', 'stops must be an array of strings')
 	end
 

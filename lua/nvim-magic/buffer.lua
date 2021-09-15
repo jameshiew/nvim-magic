@@ -15,7 +15,7 @@ function M.get_filename()
 end
 
 function M.get_filetype(bufnr)
-	if bufnr == nil then
+	if not bufnr then
 		bufnr = 0
 	end
 	return vim.api.nvim_buf_get_option(bufnr, 'filetype')
@@ -27,7 +27,7 @@ function M.append(bufnr, row, col, lines)
 end
 
 function M.get_visual_lines(bufnr)
-	if bufnr == nil then
+	if not bufnr then
 		bufnr = 0
 	end
 
@@ -63,7 +63,7 @@ end
 
 -- gets full and partial lines between start and end
 function M.get_lines(bufnr, start_row, start_col, end_row, end_col)
-	if bufnr == nil then
+	if not bufnr then
 		bufnr = 0
 	end
 	if start_row == end_row and start_col == end_col then
