@@ -1,8 +1,0 @@
-{
-  "name": "Test",
-  "description": "This is a test prompt.",
-  "tags": {
-    "test": "An example tag."
-  },
-  "stop_code": "\n```"
-}
