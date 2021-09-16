@@ -12,10 +12,9 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+e.g.
+1. Select some text
+2. Press `<Leader>mcs`
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
@@ -24,7 +23,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Details (please complete the following information):**
- - OS: [e.g. Windows, Linux]
+ - OS: [e.g. Windows 10, Ubuntu 21.04]
  - Neovim version: [e.g. 0.5]
  - nvim-magic version: [e.g. v0.2.2, commit 4bd2777e2b31b545272e3b57155651b421f74f57]
 
