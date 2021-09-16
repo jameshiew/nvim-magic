@@ -1,16 +1,19 @@
-local log = nil
+local plenary_log = require('plenary.log')
 
-local level = vim.fn.getenv('NVIM_MAGIC_LOGLEVEL')
-if level == vim.NIL then
-	level = 'info'
+local LOGLEVEL_ENVVAR = 'NVIM_MAGIC_LOGLEVEL'
+
+local function get_loglevel()
+	local level = vim.fn.getenv(LOGLEVEL_ENVVAR)
+	if level == vim.NIL then
+		return 'info'
+	end
+	return level
 end
 
-return (function()
-	if log == nil then
-		log = require('plenary.log').new({
-			plugin = 'nvim-magic',
-			level = level,
-		})
-	end
-	return log
-end)()
+local logger = plenary_log.new({
+	plugin = 'nvim-magic',
+	level = get_loglevel(),
+})
+logger.fmt_debug('Logger initialized level=%s', logger.level)
+
+return logger

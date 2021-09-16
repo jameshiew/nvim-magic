@@ -27,10 +27,10 @@ end
 function M.new(override)
 	local config = M.default_cfg()
 
-	if override ~= nil then
+	if override then
 		assert(type(override) == 'table', 'config must be a table')
 
-		if override.api_endpoint ~= nil then
+		if override.api_endpoint then
 			assert(
 				type(override.api_endpoint) == 'string' and 1 <= #override.api_endpoint,
 				'api_endpoint must be a non-empty string'
@@ -38,7 +38,7 @@ function M.new(override)
 			config.api_endpoint = override.api_endpoint
 		end
 
-		if override.cache == nil then
+		if not override.cache then
 			config.cache = nil
 		else
 			assert(type(override.cache) == 'table', 'cache must be a table or nil')
@@ -53,7 +53,7 @@ function M.new(override)
 	log.fmt_debug('nvim-magic-openai config=%s', config)
 
 	local http_cache
-	if config.cache ~= nil then
+	if config.cache then
 		http_cache = cache.new(config.cache.dir_name)
 	else
 		log.fmt_debug('Using dummy cache')

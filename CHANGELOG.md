@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+* Vim notifications display buffer filename if possible
+* Use [lustache](https://github.com/Olivine-Labs/lustache) for filling out prompt templates
+
 ## [0.2.1] - 2021-09-14
 
 ### Changed

@@ -20,13 +20,13 @@ end
 
 function M.append_completion(backend, max_tokens, stops)
 	assert(backend ~= nil, 'backend must be provided')
-	if max_tokens ~= nil then
+	if max_tokens then
 		assert(type(max_tokens) == 'number', 'max tokens must be a number')
 		assert(1 <= max_tokens, 'max tokens must be at least 1')
 	else
 		max_tokens = 300
 	end
-	if stops ~= nil then
+	if stops then
 		assert(type(stops) == 'table', 'stop must be an array of strings')
 		assert(type(stops[1]) == 'string', 'stop must be an array of strings')
 	end
@@ -59,7 +59,7 @@ end
 
 function M.suggest_alteration(backend, language)
 	assert(backend ~= nil, 'backend must be provided')
-	if language == nil then
+	if not language then
 		language = buffer.get_filetype()
 	else
 		assert(type(language) == 'string', 'language must be a string')
@@ -143,7 +143,7 @@ end
 
 function M.suggest_docstring(backend, language)
 	assert(backend ~= nil, 'backend must be provided')
-	if language == nil then
+	if not language then
 		language = buffer.get_filetype()
 	else
 		assert(type(language) == 'string', 'language must be a string')

@@ -16,8 +16,8 @@ end
 function M.setup(override)
 	local config = M.default_cfg()
 
-	if override ~= nil then
-		if override.backends ~= nil then
+	if override then
+		if override.backends then
 			assert(type(override.backends) == 'table', 'backends must be an array of backends')
 			assert(type(override.backends.default) == 'table', 'backends must be an array of backends')
 			for name, backend in pairs(override.backends) do
@@ -25,7 +25,7 @@ function M.setup(override)
 			end
 			config.backends = override.backends
 		end
-		if override.use_default_keymap ~= nil then
+		if override.use_default_keymap then
 			assert(type(override.use_default_keymap == 'boolean'), 'use_default_keymap must be a boolean')
 			config.use_default_keymap = override.use_default_keymap
 		end
