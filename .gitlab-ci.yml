@@ -8,5 +8,5 @@ lint:
     - luacheck --version
     - luacheck .
     - stylua --version
-    # - stylua --verbose --check .  -- TODO: this hangs the CI container for some reason
+    - stylua --verbose --check .
 
