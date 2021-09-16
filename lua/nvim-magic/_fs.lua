@@ -1,5 +1,7 @@
 local fs = {}
 
+local pathlib = require('plenary.path')
+
 function fs.read(path)
 	-- @returns [string]
 	assert(path ~= nil, 'path cannot be nil')
@@ -11,15 +13,15 @@ function fs.read(path)
 	return contents
 end
 
-function fs.chomp_slash(s)
-	if s:sub(-1) ~= '/' then
-		error('string does not end with trailing slash')
+function fs.chomp_path_separator(s)
+	if s:sub(-1) ~= pathlib.path.sep then
+		error('string does not end with trailing path separator')
 	end
 	return s:sub(1, -2)
 end
 
-function M.get_dir_name(path)
-	return vim.fn.fnamemodify(M.chomp_slash(path), ':t')
+function fs.get_dir_name(path)
+	return vim.fn.fnamemodify(M.chomp_path_separator(path), ':t')
 end
 
 return fs
