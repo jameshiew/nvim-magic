@@ -77,7 +77,7 @@ function flows.suggest_alteration(backend, language)
 
 	ui.prompt_input('This code should be altered to...', keymaps.get_quick_quit(), function(task)
 		local visual = table.concat(visual_lines, '\n')
-		local tmpl = templates.loaded.alter
+		local tmpl = templates.loaded['nvim-magic']['alter']
 		local prompt = tmpl:fill({
 			language = language,
 			task = task,
@@ -153,7 +153,7 @@ function flows.suggest_docstring(backend, language)
 	end
 
 	local visual = table.concat(vis_lines, '\n')
-	local tmpl = templates.loaded.docstring
+	local tmpl = templates.loaded['nvim-magic']['docstring']
 	local prompt = tmpl:fill({
 		language = language,
 		snippet = visual,
