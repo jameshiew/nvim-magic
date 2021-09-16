@@ -23,7 +23,7 @@ function templates.new(tmpl, stop_code)
 end
 
 local function load(name)
-	local prompt_dir = 'prompts/' .. name
+	local prompt_dir = 'prompts/nvim-magic/' .. name
 
 	local tmpl = fs.read(vim.api.nvim_get_runtime_file(prompt_dir .. '/template.mustache', false)[1])
 	local meta_raw = fs.read(vim.api.nvim_get_runtime_file(prompt_dir .. '/meta.json', false)[1])
