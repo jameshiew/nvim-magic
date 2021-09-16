@@ -49,17 +49,6 @@ local function prompts_dirs()
 	return dedupe(dirs)
 end
 
-local function chomp_slash(s)
-	if s:sub(-1) ~= '/' then
-		error('string does not end with trailing slash')
-	end
-	return s:sub(1, -2)
-end
-
-local function get_dir_name(path)
-	return vim.fn.fnamemodify(chomp_slash(path), ':t')
-end
-
 return (function()
 	local M = {
 		loaded = {},
@@ -69,13 +58,13 @@ return (function()
 
 	for _, dir_path in pairs(prompts_dirs()) do
 		-- TODO: handle conflicting directory names
-		local dir_name = get_dir_name(dir_path)
+		local dir_name = fs.get_dir_name(dir_path)
 		assert(not M.loaded[dir_name])
 		M.loaded[dir_name] = {}
 
 		local subdirs = dedupe(vim.api.nvim_get_runtime_file(PROMPTS_RUNTIME_DIRNAME .. dir_name .. '/*/', true))
 		for _, subdir in pairs(subdirs) do
-			local subdir_name = get_dir_name(subdir)
+			local subdir_name = fs.get_dir_name(subdir)
 			assert(not M.loaded[dir_name][subdir_name])
 			M.loaded[dir_name][subdir_name] = load(PROMPTS_RUNTIME_DIRNAME .. dir_name .. '/' .. subdir_name)
 			log.fmt_debug('Loaded package=%s template=%s', dir_name, subdir_name)

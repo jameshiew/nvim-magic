@@ -11,4 +11,15 @@ function fs.read(path)
 	return contents
 end
 
+function fs.chomp_slash(s)
+	if s:sub(-1) ~= '/' then
+		error('string does not end with trailing slash')
+	end
+	return s:sub(1, -2)
+end
+
+function M.get_dir_name(path)
+	return vim.fn.fnamemodify(M.chomp_slash(path), ':t')
+end
+
 return fs
