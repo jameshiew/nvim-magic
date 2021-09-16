@@ -10,9 +10,19 @@ local DEFAULT_API_ENDPOINT = 'https://api.openai.com/v1/engines/davinci-codex/co
 local API_KEY_ENVVAR = 'OPENAI_API_KEY'
 
 local function env_get_api_key()
-	local api_key = vim.env[API_KEY_ENVVAR]
-	assert(api_key ~= nil and api_key ~= '', API_KEY_ENVVAR .. ' must be set in your environment')
-	return api_key
+        local api_key = ''
+        if vim.g[API_KEY_ENVVAR] then
+            api_key = vim.g[API_KEY_ENVVAR]
+        elseif vim.env[API_KEY_ENVVAR] then
+            api_key = vim.env[API_KEY_ENVVAR]
+        end
+
+        assert(api_key ~= nil or api_key ~= '', string.format(
+                'Any of let g:%s or $%s must be set in your vim or environment config respectively',
+                API_KEY_ENVVAR,
+                API_KEY_ENVVAR))
+
+        return api_key
 end
 
 function M.default_cfg()
