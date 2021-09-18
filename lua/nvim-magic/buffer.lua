@@ -1,37 +1,37 @@
-local M = {}
+local buffer = {}
 
 local log = require('nvim-magic.log')
 
 local ESC_FEEDKEY = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
 
-function M.get_handles()
+function buffer.get_handles()
 	local winnr = vim.api.nvim_get_current_win()
 	local bufnr = vim.api.nvim_win_get_buf(winnr)
 	return bufnr, winnr
 end
 
-function M.get_filename()
+function buffer.get_filename()
 	return vim.fn.expand('%:t')
 end
 
-function M.get_filetype(bufnr)
+function buffer.get_filetype(bufnr)
 	if not bufnr then
 		bufnr = 0
 	end
 	return vim.api.nvim_buf_get_option(bufnr, 'filetype')
 end
 
-function M.append(bufnr, row, col, lines)
+function buffer.append(bufnr, row, col, lines)
 	vim.api.nvim_buf_set_text(bufnr, row - 1, col - 1, row - 1, col - 1, lines)
 	log.fmt_debug('Appended lines count=%s row=%s col=%s)', #lines, row, col)
 end
 
-function M.get_visual_lines(bufnr)
+function buffer.get_visual_lines(bufnr)
 	if not bufnr then
 		bufnr = 0
 	end
 
-	local start_row, start_col, end_row, end_col = M.get_visual_start_end()
+	local start_row, start_col, end_row, end_col = buffer.get_visual_start_end()
 	if start_row == end_row and start_col == end_col then
 		return nil
 	end
@@ -43,13 +43,13 @@ function M.get_visual_lines(bufnr)
 		end_col
 	)
 
-	local visual_lines = M.get_lines(bufnr, start_row, start_col, end_row, end_col)
+	local visual_lines = buffer.get_lines(bufnr, start_row, start_col, end_row, end_col)
 
 	return visual_lines, start_row, start_col, end_row, end_col
 end
 
 -- should be called while in visual mode only
-function M.get_visual_start_end()
+function buffer.get_visual_start_end()
 	-- NB: switches out of visual mode then back again to ensure marks are current
 	vim.api.nvim_feedkeys(ESC_FEEDKEY, 'n', true)
 	vim.api.nvim_feedkeys('gv', 'x', false)
@@ -62,7 +62,7 @@ function M.get_visual_start_end()
 end
 
 -- gets full and partial lines between start and end
-function M.get_lines(bufnr, start_row, start_col, end_row, end_col)
+function buffer.get_lines(bufnr, start_row, start_col, end_row, end_col)
 	if not bufnr then
 		bufnr = 0
 	end
@@ -80,4 +80,4 @@ function M.get_lines(bufnr, start_row, start_col, end_row, end_col)
 	return lines
 end
 
-return M
+return buffer

@@ -1,4 +1,4 @@
-local M = {}
+local templates = {}
 
 local fs = require('nvim-magic.fs')
 local log = require('nvim-magic.log')
@@ -13,7 +13,7 @@ end
 
 local TemplateMt = { __index = TemplateMethods }
 
-function M.new(tmpl, stop_code)
+function templates.new(tmpl, stop_code)
 	local template = {
 		template = tmpl,
 		-- TODO: parse tags as well
@@ -29,13 +29,13 @@ local function load(name)
 	local meta_raw = fs.read(vim.api.nvim_get_runtime_file(prompt_dir .. '/meta.json', false)[1])
 	local meta = vim.fn.json_decode(meta_raw)
 
-	return M.new(tmpl, meta.stop_code)
+	return templates.new(tmpl, meta.stop_code)
 end
 
-M.loaded = {}
+templates.loaded = {}
 for _, name in pairs({ 'alter', 'docstring' }) do
-	M.loaded[name] = load(name)
+	templates.loaded[name] = load(name)
 	log.fmt_debug('Loaded template=%s', name)
 end
 
-return M
+return templates

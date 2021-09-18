@@ -10,10 +10,10 @@ local function get_loglevel()
 	return level
 end
 
-local logger = plenary_log.new({
+local log = plenary_log.new({
 	plugin = 'nvim-magic',
 	level = get_loglevel(),
 })
-logger.fmt_debug('Logger initialized level=%s', logger.level)
+log.fmt_debug('Logger initialized level=%s', log.level)
 
-return logger
+return log

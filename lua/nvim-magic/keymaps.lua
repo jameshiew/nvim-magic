@@ -1,6 +1,6 @@
-local M = {}
+local keymaps = {}
 
-function M.get_quick_quit()
+function keymaps.get_quick_quit()
 	return {
 		{
 			'n',
@@ -21,7 +21,7 @@ function M.get_quick_quit()
 	}
 end
 
-function M.set_default()
+function keymaps.set_default()
 	vim.api.nvim_set_keymap(
 		'v',
 		'<Leader>mcs',
@@ -42,4 +42,4 @@ function M.set_default()
 	)
 end
 
-return M
+return keymaps

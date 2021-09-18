@@ -1,15 +1,15 @@
 -- interacting with the user
-local M = {}
+local ui = {}
 
 local Input = require('nui.input')
 local Popup = require('nui.popup')
 local event = require('nui.utils.autocmd').event
 
-function M.notify(msg, log_level, opts)
+function ui.notify(msg, log_level, opts)
 	vim.notify('nvim-magic: ' .. msg, log_level, opts)
 end
 
-function M.pop_up(lines, filetype, border_text, keymaps)
+function ui.pop_up(lines, filetype, border_text, keymaps)
 	local popup = Popup({
 		enter = true,
 		focusable = true,
@@ -43,7 +43,7 @@ function M.pop_up(lines, filetype, border_text, keymaps)
 	vim.api.nvim_buf_set_lines(popup.bufnr, 0, 1, false, lines)
 end
 
-function M.prompt_input(title, keymaps, on_submit)
+function ui.prompt_input(title, keymaps, on_submit)
 	local input = Input({
 		position = '20%',
 		size = {
@@ -79,4 +79,4 @@ function M.prompt_input(title, keymaps, on_submit)
 	end
 end
 
-return M
+return ui
