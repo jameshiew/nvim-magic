@@ -1,4 +1,4 @@
-local M = {}
+local cache = {}
 
 local log = require('nvim-magic.log')
 local pathlib = require('plenary.path')
@@ -19,7 +19,7 @@ end
 
 local CacheMt = { __index = CacheMethods }
 
-function M.new(directory)
+function cache.new(directory)
 	assert(type(directory) == 'string' and directory ~= '')
 	local directory_path = DIR:joinpath(directory)
 	directory_path:mkdir({ parents = true, exist_ok = true })
@@ -38,8 +38,8 @@ end
 
 local DummyCacheMt = { __index = DummyCacheMethods }
 
-function M.new_dummy()
+function cache.new_dummy()
 	return setmetatable({}, DummyCacheMt)
 end
 
-return M
+return cache

@@ -1,6 +1,6 @@
 -- helpful flows that can be mapped to key bindings
 -- they can assume sensible defaults and/or interact with the user
-local M = {}
+local flows = {}
 
 local buffer = require('nvim-magic.buffer')
 local keymaps = require('nvim-magic.keymaps')
@@ -18,7 +18,7 @@ local function notify_prefix(filename)
 	return prefix
 end
 
-function M.append_completion(backend, max_tokens, stops)
+function flows.append_completion(backend, max_tokens, stops)
 	assert(backend ~= nil, 'backend must be provided')
 	if max_tokens then
 		assert(type(max_tokens) == 'number', 'max tokens must be a number')
@@ -57,7 +57,7 @@ function M.append_completion(backend, max_tokens, stops)
 	end)
 end
 
-function M.suggest_alteration(backend, language)
+function flows.suggest_alteration(backend, language)
 	assert(backend ~= nil, 'backend must be provided')
 	if not language then
 		language = buffer.get_filetype()
@@ -141,7 +141,7 @@ function M.suggest_alteration(backend, language)
 	end)
 end
 
-function M.suggest_docstring(backend, language)
+function flows.suggest_docstring(backend, language)
 	assert(backend ~= nil, 'backend must be provided')
 	if not language then
 		language = buffer.get_filetype()
@@ -222,4 +222,4 @@ function M.suggest_docstring(backend, language)
 	end)
 end
 
-return M
+return flows

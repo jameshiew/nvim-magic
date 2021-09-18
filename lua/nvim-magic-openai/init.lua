@@ -1,4 +1,4 @@
-local M = {}
+local openai = {}
 
 local cache = require('nvim-magic-openai.cache')
 local backend = require('nvim-magic-openai.backend')
@@ -15,7 +15,7 @@ local function env_get_api_key()
 	return api_key
 end
 
-function M.default_cfg()
+function openai.default_cfg()
 	return {
 		api_endpoint = DEFAULT_API_ENDPOINT,
 		cache = {
@@ -24,8 +24,8 @@ function M.default_cfg()
 	}
 end
 
-function M.new(override)
-	local config = M.default_cfg()
+function openai.new(override)
+	local config = openai.default_cfg()
 
 	if override then
 		assert(type(override) == 'table', 'config must be a table')
@@ -63,4 +63,4 @@ function M.new(override)
 	return backend.new(config.api_endpoint, http.new(http_cache), env_get_api_key)
 end
 
-return M
+return openai

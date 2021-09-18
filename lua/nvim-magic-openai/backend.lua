@@ -1,4 +1,4 @@
-local M = {}
+local backend = {}
 
 local completion = require('nvim-magic-openai.completion')
 
@@ -29,7 +29,7 @@ end
 
 local BackendMt = { __index = BackendMethods }
 
-function M.new(api_endpoint, http, api_key_fn)
+function backend.new(api_endpoint, http, api_key_fn)
 	return setmetatable({
 		api_endpoint = api_endpoint,
 		get_api_key = api_key_fn,
@@ -37,4 +37,4 @@ function M.new(api_endpoint, http, api_key_fn)
 	}, BackendMt)
 end
 
-return M
+return backend

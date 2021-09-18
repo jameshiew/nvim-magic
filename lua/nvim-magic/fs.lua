@@ -1,6 +1,6 @@
-local M = {}
+local fs = {}
 
-function M.read(path)
+function fs.read(path)
 	-- @returns [string]
 	assert(path ~= nil, 'path cannot be nil')
 	assert(type(path) == 'string', 'path must be a string')
@@ -11,4 +11,4 @@ function M.read(path)
 	return contents
 end
 
-return M
+return fs

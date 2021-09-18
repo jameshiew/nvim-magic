@@ -1,4 +1,4 @@
-local M = {}
+local http = {}
 
 local curl = require('nvim-magic-openai.curl')
 local random = require('nvim-magic-openai.random')
@@ -81,11 +81,11 @@ end
 
 local ClientMt = { __index = ClientMethods }
 
-function M.new(cache)
+function http.new(cache)
 	assert(type(cache) == 'table', 'cache must be a table with a method save(filename, contents)')
 	return setmetatable({
 		cache = cache,
 	}, ClientMt)
 end
 
-return M
+return http
