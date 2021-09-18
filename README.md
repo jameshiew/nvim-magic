@@ -38,7 +38,7 @@ A pluggable framework for integrating AI code assistance into Neovim. The goals 
 At the moment, only a backend for [OpenAI](https://beta.openai.com/) is implemented, which is bundled in this repo and used by default. Your API key should be made available to your Neovim session in an environment variable `OPENAI_API_KEY`. See [docs/openai.md](docs/openai.md) for more details.
 
 ```shell
-export OPENAI_API_KEY='your-api-key-here'
+ export OPENAI_API_KEY='your-api-key-here'
 ```
 
 Install like any other plugin. It is necessary to call `setup()` once see [docs/config.md](docs/config.md) if you want to override the default configuration e.g. to turn off the default keymaps.
