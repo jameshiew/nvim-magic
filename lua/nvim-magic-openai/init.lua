@@ -15,6 +15,10 @@ local function env_get_api_key()
 	return api_key
 end
 
+function openai.version()
+	return '0.3.0-dev'
+end
+
 function openai.default_cfg()
 	return {
 		api_endpoint = DEFAULT_API_ENDPOINT,

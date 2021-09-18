@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+* Added functions to get the current version e.g. `require('nvim-magic').version()`
+
 ## [0.2.3] - 2021-09-18
 
 ### Added

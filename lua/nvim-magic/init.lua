@@ -13,6 +13,10 @@ function magic.default_cfg()
 	}
 end
 
+function magic.version()
+	return '0.3.0-dev'
+end
+
 function magic.setup(override)
 	local config = magic.default_cfg()
 
