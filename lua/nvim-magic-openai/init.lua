@@ -14,11 +14,7 @@ local function env_get_api_key()
 	return api_key
 end
 
-function openai.version()
-	return '0.3.0-dev'
-end
-
-function openai.default_cfg()
+local function default_config()
 	return {
 		api_endpoint = DEFAULT_API_ENDPOINT,
 		cache = {
@@ -27,8 +23,12 @@ function openai.default_cfg()
 	}
 end
 
+function openai.version()
+	return '0.3.0-dev'
+end
+
 function openai.new(override)
-	local config = openai.default_cfg()
+	local config = default_config()
 
 	if override then
 		assert(type(override) == 'table', 'config must be a table')

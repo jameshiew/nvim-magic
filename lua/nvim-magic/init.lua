@@ -4,7 +4,7 @@ local log = require('nvim-magic._log')
 
 magic.backends = {} -- should be set during setup()
 
-function magic.default_cfg()
+local function default_config()
 	return {
 		backends = {
 			default = require('nvim-magic-openai').new(),
@@ -18,7 +18,7 @@ function magic.version()
 end
 
 function magic.setup(override)
-	local config = magic.default_cfg()
+	local config = default_config()
 
 	if override then
 		if override.backends then
