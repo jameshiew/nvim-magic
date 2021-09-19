@@ -1,6 +1,6 @@
 local cache = {}
 
-local log = require('nvim-magic.log')
+local log = require('nvim-magic-openai._log')
 local pathlib = require('plenary.path')
 
 local DIR = pathlib.new(vim.fn.stdpath('cache')):joinpath('nvim-magic-openai')

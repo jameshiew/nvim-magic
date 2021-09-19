@@ -1,10 +1,9 @@
 local openai = {}
 
-local cache = require('nvim-magic-openai._cache')
 local backend = require('nvim-magic-openai.backend')
+local cache = require('nvim-magic-openai._cache')
+local log = require('nvim-magic-openai._log')
 local http = require('nvim-magic-openai._http')
-
-local log = require('nvim-magic.log')
 
 local DEFAULT_API_ENDPOINT = 'https://api.openai.com/v1/engines/davinci-codex/completions'
 local API_KEY_ENVVAR = 'OPENAI_API_KEY'
