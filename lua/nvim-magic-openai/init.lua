@@ -53,7 +53,7 @@ function openai.new(override)
 		end
 	end
 
-	log.fmt_debug('nvim-magic-openai config=%s', config)
+	log.fmt_debug('Got config=%s', config)
 
 	local http_cache
 	if config.cache then
