@@ -1,6 +1,35 @@
-local M = {}
+local keymaps = {}
 
-function M.get_quick_quit()
+local function luacmd(lua)
+	return '<Cmd>lua ' .. lua .. '<CR>'
+end
+
+keymaps.plugs = {
+	['<Plug>nvim-magic-append-completion'] = {
+		default_keymap = '<Leader>mcs',
+		lua = "require('nvim-magic.flows').append_completion(require('nvim-magic').backends.default)",
+	},
+	['<Plug>nvim-magic-suggest-alteration'] = {
+		default_keymap = '<Leader>mss',
+		lua = "require('nvim-magic.flows').suggest_alteration(require('nvim-magic').backends.default)",
+	},
+	['<Plug>nvim-magic-suggest-docstring'] = {
+		default_keymap = '<Leader>mds',
+		lua = "require('nvim-magic.flows').suggest_docstring(require('nvim-magic').backends.default)",
+	},
+}
+
+for plug, v in pairs(keymaps.plugs) do
+	vim.api.nvim_set_keymap('v', plug, luacmd(v.lua), {})
+end
+
+function keymaps.set_default()
+	for plug, v in pairs(keymaps.plugs) do
+		vim.api.nvim_set_keymap('v', v.default_keymap, plug, {})
+	end
+end
+
+function keymaps.get_quick_quit()
 	return {
 		{
 			'n',
@@ -21,25 +50,4 @@ function M.get_quick_quit()
 	}
 end
 
-function M.set_default()
-	vim.api.nvim_set_keymap(
-		'v',
-		'<Leader>mcs',
-		"<Cmd>lua require('nvim-magic.flows').append_completion(require('nvim-magic').backends.default)<CR>",
-		{}
-	)
-	vim.api.nvim_set_keymap(
-		'v',
-		'<Leader>mss',
-		"<Cmd>lua require('nvim-magic.flows').suggest_alteration(require('nvim-magic').backends.default)<CR>",
-		{}
-	)
-	vim.api.nvim_set_keymap(
-		'v',
-		'<Leader>mds',
-		"<Cmd>lua require('nvim-magic.flows').suggest_docstring(require('nvim-magic').backends.default)<CR>",
-		{}
-	)
-end
-
-return M
+return keymaps

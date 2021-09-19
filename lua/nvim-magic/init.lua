@@ -1,10 +1,10 @@
-local M = {}
+local magic = {}
 
 local log = require('nvim-magic.log')
 
-M.backends = {} -- should be set during setup()
+magic.backends = {} -- should be set during setup()
 
-function M.default_cfg()
+function magic.default_cfg()
 	return {
 		backends = {
 			default = require('nvim-magic-openai').new(),
@@ -13,8 +13,8 @@ function M.default_cfg()
 	}
 end
 
-function M.setup(override)
-	local config = M.default_cfg()
+function magic.setup(override)
+	local config = magic.default_cfg()
 
 	if override then
 		if override.backends then
@@ -33,7 +33,7 @@ function M.setup(override)
 
 	log.fmt_debug('Got config=%s ', config)
 
-	M.backends = config.backends
+	magic.backends = config.backends
 
 	if config.use_default_keymap then
 		require('nvim-magic.keymaps').set_default()
@@ -42,4 +42,4 @@ function M.setup(override)
 	end
 end
 
-return M
+return magic
