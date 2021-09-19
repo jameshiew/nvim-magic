@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * Added functions to get the current version e.g. `require('nvim-magic').version()`
 
+### Changed
+* Prefixed Lua modules that are meant to be private with `_`
+* Gave `nvim-magic-openai` its own logger
+
+### Fixed
+* Running stylua in CI (thanks @abatilo)
+
 ## [0.2.3] - 2021-09-18
 
 ### Added
