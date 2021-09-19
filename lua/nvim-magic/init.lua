@@ -22,8 +22,8 @@ function magic.setup(override)
 
 	if override then
 		if override.backends then
-			assert(type(override.backends) == 'table', 'backends must be an array of backends')
-			assert(type(override.backends.default) == 'table', 'backends must be an array of backends')
+			assert(type(override.backends) == 'table', 'backends must be a map of backends')
+			assert(type(override.backends.default) == 'table', 'backends must be a map of backends')
 			for name, backend in pairs(override.backends) do
 				assert(type(backend.complete) == 'function', 'backend ' .. name .. ' needs a complete function')
 			end
