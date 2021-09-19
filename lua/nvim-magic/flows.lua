@@ -2,11 +2,11 @@
 -- they can assume sensible defaults and/or interact with the user
 local flows = {}
 
-local buffer = require('nvim-magic.buffer')
-local keymaps = require('nvim-magic.keymaps')
+local buffer = require('nvim-magic._buffer')
+local keymaps = require('nvim-magic._keymaps')
 local log = require('nvim-magic.log')
-local templates = require('nvim-magic.templates')
-local ui = require('nvim-magic.ui')
+local templates = require('nvim-magic._templates')
+local ui = require('nvim-magic._ui')
 
 local function notify_prefix(filename)
 	local prefix

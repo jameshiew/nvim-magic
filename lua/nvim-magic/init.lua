@@ -40,7 +40,7 @@ function magic.setup(override)
 	magic.backends = config.backends
 
 	if config.use_default_keymap then
-		require('nvim-magic.keymaps').set_default()
+		require('nvim-magic._keymaps').set_default()
 
 		log.debug('Set default keymaps')
 	end

@@ -1,8 +1,8 @@
 local openai = {}
 
-local cache = require('nvim-magic-openai.cache')
+local cache = require('nvim-magic-openai._cache')
 local backend = require('nvim-magic-openai.backend')
-local http = require('nvim-magic-openai.http')
+local http = require('nvim-magic-openai._http')
 
 local log = require('nvim-magic.log')
 
