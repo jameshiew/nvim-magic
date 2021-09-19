@@ -1,7 +1,7 @@
 local templates = {}
 
 local fs = require('nvim-magic._fs')
-local log = require('nvim-magic.log')
+local log = require('nvim-magic._log')
 
 local lustache = require('nvim-magic.vendor.lustache.src.lustache')
 

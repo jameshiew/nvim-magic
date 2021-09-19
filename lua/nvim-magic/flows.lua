@@ -4,7 +4,7 @@ local flows = {}
 
 local buffer = require('nvim-magic._buffer')
 local keymaps = require('nvim-magic._keymaps')
-local log = require('nvim-magic.log')
+local log = require('nvim-magic._log')
 local templates = require('nvim-magic._templates')
 local ui = require('nvim-magic._ui')
 

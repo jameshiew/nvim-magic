@@ -1,6 +1,6 @@
 local magic = {}
 
-local log = require('nvim-magic.log')
+local log = require('nvim-magic._log')
 
 magic.backends = {} -- should be set during setup()
 
