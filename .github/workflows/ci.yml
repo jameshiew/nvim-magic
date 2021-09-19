@@ -1,0 +1,18 @@
+name: Lint
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container:
+      image: registry.gitlab.com/jameshiew/toolbox/luaci:20210916-115155-f4045b
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - run: |
+          luacheck .
+      - run: |
+          stylua --check .
