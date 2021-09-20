@@ -1,6 +1,6 @@
 local buffer = {}
 
-local log = require('nvim-magic.log')
+local log = require('nvim-magic._log')
 
 local ESC_FEEDKEY = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
 

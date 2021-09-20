@@ -1,7 +1,6 @@
 # nvim-magic
 
 ![ci](https://github.com/jameshiew/nvim-magic/actions/workflows/ci.yml/badge.svg)
-[![Pipeline Status](https://gitlab.com/jameshiew/nvim-magic/badges/master/pipeline.svg)](https://gitlab.com/jameshiew/nvim-magic/-/pipelines)
 
 A pluggable framework for integrating AI code assistance into Neovim. The goals are to make using AI code assistance unobtrusive, and to make it easy to create and share new flows that use AI code assistance. Go to [quickstart](#quickstart) for how to install. It currently works with [OpenAI Codex](https://openai.com/blog/openai-codex/).
 
@@ -52,7 +51,6 @@ use({
 	config = function()
 		require('nvim-magic').setup()
 	end,
-	tag = '0.2.3',  -- recommended to pin to a tag and update manually as there may be breaking changes
 	requires = {
 		'nvim-lua/plenary.nvim',
 		'MunifTanjim/nui.nvim'

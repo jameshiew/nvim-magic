@@ -1,7 +1,7 @@
 local http = {}
 
-local curl = require('nvim-magic-openai.curl')
-local random = require('nvim-magic-openai.random')
+local curl = require('nvim-magic-openai._curl')
+local random = require('nvim-magic-openai._random')
 
 local DEFAULT_TIMEOUT_MILLI = 30000
 

@@ -1,8 +1,7 @@
 local backend = {}
 
-local completion = require('nvim-magic-openai.completion')
-
-local log = require('nvim-magic.log')
+local completion = require('nvim-magic-openai._completion')
+local log = require('nvim-magic-openai._log')
 
 local BackendMethods = {}
 

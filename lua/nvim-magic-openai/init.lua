@@ -1,10 +1,9 @@
 local openai = {}
 
-local cache = require('nvim-magic-openai.cache')
 local backend = require('nvim-magic-openai.backend')
-local http = require('nvim-magic-openai.http')
-
-local log = require('nvim-magic.log')
+local cache = require('nvim-magic-openai._cache')
+local log = require('nvim-magic-openai._log')
+local http = require('nvim-magic-openai._http')
 
 local DEFAULT_API_ENDPOINT = 'https://api.openai.com/v1/engines/davinci-codex/completions'
 local API_KEY_ENVVAR = 'OPENAI_API_KEY'
@@ -15,7 +14,7 @@ local function env_get_api_key()
 	return api_key
 end
 
-function openai.default_cfg()
+local function default_config()
 	return {
 		api_endpoint = DEFAULT_API_ENDPOINT,
 		cache = {
@@ -24,8 +23,12 @@ function openai.default_cfg()
 	}
 end
 
+function openai.version()
+	return '0.3.0-dev'
+end
+
 function openai.new(override)
-	local config = openai.default_cfg()
+	local config = default_config()
 
 	if override then
 		assert(type(override) == 'table', 'config must be a table')
@@ -50,7 +53,7 @@ function openai.new(override)
 		end
 	end
 
-	log.fmt_debug('nvim-magic-openai config=%s', config)
+	log.fmt_debug('Got config=%s', config)
 
 	local http_cache
 	if config.cache then
