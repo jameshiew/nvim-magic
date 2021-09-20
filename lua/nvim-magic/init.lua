@@ -14,7 +14,7 @@ local function default_config()
 end
 
 function magic.version()
-	return '0.3.0-dev'
+	return '0.3.0'
 end
 
 function magic.setup(override)
