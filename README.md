@@ -51,7 +51,6 @@ use({
 	config = function()
 		require('nvim-magic').setup()
 	end,
-	tag = '0.2.3',  -- recommended to pin to a tag and update manually as there may be breaking changes
 	requires = {
 		'nvim-lua/plenary.nvim',
 		'MunifTanjim/nui.nvim'
