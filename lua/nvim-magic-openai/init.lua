@@ -24,7 +24,7 @@ local function default_config()
 end
 
 function openai.version()
-	return '0.3.0'
+	return '0.3.1-dev'
 end
 
 function openai.new(override)
