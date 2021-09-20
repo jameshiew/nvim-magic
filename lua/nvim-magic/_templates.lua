@@ -17,7 +17,7 @@ end
 
 local TemplateMt = { __index = TemplateMethods }
 
-local function new(tmpl, stop_code)
+function templates.new(tmpl, stop_code)
 	local template = {
 		template = tmpl,
 		-- TODO: parse tags as well
@@ -26,12 +26,12 @@ local function new(tmpl, stop_code)
 	return setmetatable(template, TemplateMt)
 end
 
-local function load(prompt_dir)
+function templates.load(prompt_dir)
 	local tmpl = fs.read(vim.api.nvim_get_runtime_file(prompt_dir .. '/template.mustache', false)[1])
 	local meta_raw = fs.read(vim.api.nvim_get_runtime_file(prompt_dir .. '/meta.json', false)[1])
 	local meta = vim.fn.json_decode(meta_raw)
 
-	return new(tmpl, meta.stop_code)
+	return templates.new(tmpl, meta.stop_code)
 end
 
 local function dedupe(list)
@@ -50,12 +50,7 @@ local function prompts_dirs()
 end
 
 return (function()
-	local templates = {
-		loaded = {},
-		new = new,
-		load = load,
-	}
-
+	templates.loaded = {}
 	for _, dir_path in pairs(prompts_dirs()) do
 		-- TODO: handle conflicting directory names
 		local dir_name = fs.get_dir_name(dir_path)
