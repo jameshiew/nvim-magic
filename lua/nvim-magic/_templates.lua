@@ -50,7 +50,7 @@ local function prompts_dirs()
 end
 
 return (function()
-	local M = {
+	local templates = {
 		loaded = {},
 		new = new,
 		load = load,
@@ -59,17 +59,17 @@ return (function()
 	for _, dir_path in pairs(prompts_dirs()) do
 		-- TODO: handle conflicting directory names
 		local dir_name = fs.get_dir_name(dir_path)
-		assert(not M.loaded[dir_name])
-		M.loaded[dir_name] = {}
+		assert(not templates.loaded[dir_name])
+		templates.loaded[dir_name] = {}
 
 		local subdirs = dedupe(vim.api.nvim_get_runtime_file(PROMPTS_RUNTIME_DIRNAME .. dir_name .. '/*/', true))
 		for _, subdir in pairs(subdirs) do
 			local subdir_name = fs.get_dir_name(subdir)
-			assert(not M.loaded[dir_name][subdir_name])
-			M.loaded[dir_name][subdir_name] = load(PROMPTS_RUNTIME_DIRNAME .. dir_name .. '/' .. subdir_name)
+			assert(not templates.loaded[dir_name][subdir_name])
+			templates.loaded[dir_name][subdir_name] = load(PROMPTS_RUNTIME_DIRNAME .. dir_name .. '/' .. subdir_name)
 			log.fmt_debug('Loaded package=%s template=%s', dir_name, subdir_name)
 		end
 	end
 
-	return M
+	return templates
 end)()

@@ -21,7 +21,7 @@ function fs.chomp_path_separator(s)
 end
 
 function fs.get_dir_name(path)
-	return vim.fn.fnamemodify(M.chomp_path_separator(path), ':t')
+	return vim.fn.fnamemodify(fs.chomp_path_separator(path), ':t')
 end
 
 return fs
