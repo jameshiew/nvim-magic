@@ -83,18 +83,12 @@ function buffer.get_visual_start_end()
 end
 
 function buffer.get_end_col(bufnr, row)
-	if not bufnr then
-		bufnr = 0
-	end
 	local line = vim.api.nvim_buf_get_lines(bufnr, row - 1, row, true)[1]
 	return #line
 end
 
 -- gets full and partial lines between start and end
 function buffer.get_lines(bufnr, start_row, start_col, end_row, end_col)
-	if not bufnr then
-		bufnr = 0
-	end
 	if start_row == end_row and start_col == end_col then
 		return {}
 	end
