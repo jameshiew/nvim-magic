@@ -23,9 +23,15 @@ function buffer.get_filetype(bufnr)
 	return vim.api.nvim_buf_get_option(bufnr, 'filetype')
 end
 
-function buffer.append(bufnr, row, col, lines)
-	vim.api.nvim_buf_set_text(bufnr, row - 1, col - 1, row - 1, col - 1, lines)
+function buffer.append(bufnr, row, lines)
+	local col = buffer.get_end_col(bufnr, row)
+	vim.api.nvim_buf_set_text(bufnr, row - 1, col, row - 1, col, lines)
 	log.fmt_debug('Appended lines count=%s row=%s col=%s)', #lines, row, col)
+end
+
+function buffer.paste_over(bufnr, start_row, start_col, end_row, lines)
+	local end_col = buffer.get_end_col(bufnr, end_row)
+	vim.api.nvim_buf_set_text(bufnr, start_row - 1, start_col - 1, end_row - 1, end_col, lines)
 end
 
 function buffer.get_visual_lines(bufnr)
@@ -63,8 +69,7 @@ function buffer.get_visual_start_end()
 
 	-- handle selections made in visual line mode (see :help getpos)
 	if end_col == MAX_COL then
-		local end_line = vim.api.nvim_buf_get_lines(0, end_row - 1, end_row, true)[1]
-		end_col = #end_line + 1
+		end_col = buffer.get_end_col(0, end_row)
 		log.fmt_debug(
 			'Normalized visual bounds to start_row=%s start_col=%s end_row=%s end_col=%s',
 			start_row,
@@ -75,6 +80,14 @@ function buffer.get_visual_start_end()
 	end
 
 	return start_row, start_col, end_row, end_col
+end
+
+function buffer.get_end_col(bufnr, row)
+	if not bufnr then
+		bufnr = 0
+	end
+	local line = vim.api.nvim_buf_get_lines(bufnr, row - 1, row, true)[1]
+	return #line
 end
 
 -- gets full and partial lines between start and end
