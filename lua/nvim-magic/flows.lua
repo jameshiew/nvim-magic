@@ -46,7 +46,7 @@ function flows.append_completion(backend, max_tokens, stops)
 	backend:complete(visual_lines, max_tokens, stops, function(completion)
 		local compl_lines = vim.split(completion, '\n', true)
 
-		buffer.append(orig_bufnr, end_row, end_col, compl_lines) -- TODO: use extmarks
+		buffer.append(orig_bufnr, end_row, compl_lines)
 		vim.api.nvim_set_current_win(orig_winnr)
 		vim.api.nvim_set_current_buf(orig_bufnr)
 		vim.api.nvim_win_set_cursor(0, { end_row, end_col }) -- TODO: use specific window
@@ -69,7 +69,7 @@ function flows.suggest_alteration(backend, language)
 	local filename = buffer.get_filename()
 	local nprefix = notify_prefix(filename)
 
-	local visual_lines, start_row, start_col, end_row, end_col = buffer.get_visual_lines()
+	local visual_lines, start_row, start_col, end_row, _ = buffer.get_visual_lines()
 	if not visual_lines then
 		ui.notify(nprefix .. 'nothing selected')
 		return
@@ -112,7 +112,7 @@ function flows.suggest_alteration(backend, language)
 						'n',
 						'a', -- append to original buffer
 						function(_)
-							buffer.append(orig_bufnr, end_row, end_col, compl_lines)
+							buffer.append(orig_bufnr, end_row, compl_lines)
 							vim.api.nvim_win_close(0, true)
 						end,
 						{ noremap = true },
@@ -121,14 +121,7 @@ function flows.suggest_alteration(backend, language)
 						'n',
 						'p', -- replace in original buffer
 						function(_)
-							vim.api.nvim_buf_set_text(
-								orig_bufnr,
-								start_row - 1,
-								start_col - 1,
-								end_row - 1,
-								end_col - 1,
-								compl_lines
-							)
+							buffer.paste_over(orig_bufnr, start_row, start_col, end_row, compl_lines)
 							vim.api.nvim_win_close(0, true)
 						end,
 						{ noremap = true },
@@ -153,7 +146,7 @@ function flows.suggest_docstring(backend, language)
 	local filename = buffer.get_filename()
 	local nprefix = notify_prefix(filename)
 
-	local vis_lines, start_row, start_col, end_row, end_col = buffer.get_visual_lines()
+	local vis_lines, start_row, start_col, end_row, _ = buffer.get_visual_lines()
 	if not vis_lines then
 		ui.notify(nprefix .. 'nothing selected')
 		return
@@ -194,7 +187,7 @@ function flows.suggest_docstring(backend, language)
 					'n',
 					'a', -- append to original buffer
 					function(_)
-						buffer.append(orig_bufnr, end_row, end_col, compl_lines)
+						buffer.append(orig_bufnr, end_row, compl_lines)
 						vim.api.nvim_win_close(0, true)
 					end,
 					{ noremap = true },
@@ -203,14 +196,7 @@ function flows.suggest_docstring(backend, language)
 					'n',
 					'p', -- replace in original buffer
 					function(_)
-						vim.api.nvim_buf_set_text(
-							orig_bufnr,
-							start_row - 1,
-							start_col - 1,
-							end_row - 1,
-							end_col - 1,
-							compl_lines
-						)
+						buffer.paste_over(orig_bufnr, start_row, start_col, end_row, compl_lines)
 						vim.api.nvim_win_close(0, true)
 					end,
 					{ noremap = true },

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+* Selections made in visual lines mode ("V") should now work (thanks @naefl for debugging)
+* No longer necessary to select past the end of the final line in visual mode ("v")
+
 ## [0.3.0] - 2021-09-20
 
 ### Added
