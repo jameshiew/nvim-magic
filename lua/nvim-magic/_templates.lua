@@ -18,6 +18,8 @@ end
 local TemplateMt = { __index = TemplateMethods }
 
 function templates.new(tmpl, stop_code)
+	assert(tmpl)
+	assert(stop_code)
 	local template = {
 		template = tmpl,
 		-- TODO: parse tags as well
@@ -61,7 +63,7 @@ return (function()
 		for _, subdir in pairs(subdirs) do
 			local subdir_name = fs.get_dir_name(subdir)
 			assert(not templates.loaded[dir_name][subdir_name])
-			templates.loaded[dir_name][subdir_name] = load(PROMPTS_RUNTIME_DIRNAME .. dir_name .. '/' .. subdir_name)
+			templates.loaded[dir_name][subdir_name] = templates.load(PROMPTS_RUNTIME_DIRNAME .. dir_name .. '/' .. subdir_name)
 			log.fmt_debug('Loaded package=%s template=%s', dir_name, subdir_name)
 		end
 	end
