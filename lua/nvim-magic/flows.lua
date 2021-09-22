@@ -46,7 +46,7 @@ function flows.append_completion(backend, max_tokens, stops)
 	backend:complete(visual_lines, max_tokens, stops, function(completion)
 		local compl_lines = vim.split(completion, '\n', true)
 
-		buffer.append(orig_bufnr, end_row, compl_lines) -- TODO: use extmarks
+		buffer.append(orig_bufnr, end_row, compl_lines)
 		vim.api.nvim_set_current_win(orig_winnr)
 		vim.api.nvim_set_current_buf(orig_bufnr)
 		vim.api.nvim_win_set_cursor(0, { end_row, end_col }) -- TODO: use specific window
