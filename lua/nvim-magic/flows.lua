@@ -134,14 +134,13 @@ function flows.suggest_alteration(backend, language)
 	end)
 end
 
-function flows.suggest_docstring(backend, language)
+function flows.suggest(backend, language, tmpl)
 	assert(backend ~= nil, 'backend must be provided')
 	if not language then
 		language = buffer.get_filetype()
 	else
 		assert(type(language) == 'string', 'language must be a string')
 	end
-
 	local orig_bufnr, orig_winnr = buffer.get_handles()
 	local filename = buffer.get_filename()
 	local nprefix = notify_prefix(filename)
@@ -153,7 +152,6 @@ function flows.suggest_docstring(backend, language)
 	end
 
 	local visual = table.concat(vis_lines, '\n')
-	local tmpl = templates.loaded['nvim-magic']['docstring']
 	local prompt = tmpl:fill({
 		language = language,
 		snippet = visual,
@@ -174,38 +172,42 @@ function flows.suggest_docstring(backend, language)
 		vim.api.nvim_set_current_buf(orig_bufnr)
 
 		ui.pop_up(
-			compl_lines,
-			language,
-			{
-				top = 'Suggested alteration',
-				top_align = 'center',
-				bottom = '[a] - append | [p] paste over',
-				bottom_align = 'left',
-			},
-			vim.list_extend(keymaps.get_quick_quit(), {
+				compl_lines,
+				language,
 				{
-					'n',
-					'a', -- append to original buffer
-					function(_)
-						buffer.append(orig_bufnr, end_row, compl_lines)
-						vim.api.nvim_win_close(0, true)
-					end,
-					{ noremap = true },
+					top = 'Suggested alteration',
+					top_align = 'center',
+					bottom = '[a] - append | [p] paste over',
+					bottom_align = 'left',
 				},
-				{
-					'n',
-					'p', -- replace in original buffer
-					function(_)
-						buffer.paste_over(orig_bufnr, start_row, start_col, end_row, compl_lines)
-						vim.api.nvim_win_close(0, true)
-					end,
-					{ noremap = true },
-				},
-			})
+				vim.list_extend(keymaps.get_quick_quit(), {
+					{
+						'n',
+						'a', -- append to original buffer
+						function(_)
+							buffer.append(orig_bufnr, end_row, compl_lines)
+							vim.api.nvim_win_close(0, true)
+						end,
+						{ noremap = true },
+					},
+					{
+						'n',
+						'p', -- replace in original buffer
+						function(_)
+							buffer.paste_over(orig_bufnr, start_row, start_col, end_row, compl_lines)
+							vim.api.nvim_win_close(0, true)
+						end,
+						{ noremap = true },
+					},
+				})
 		)
 	end, function(errmsg)
 		ui.notify(nprefix .. errmsg)
 	end)
+end
+
+function flows.suggest_docstring(backend, language)
+	flows.suggest(backend, language, templates.loaded['nvim-magic']['docstring'])
 end
 
 return flows
