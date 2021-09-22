@@ -4,6 +4,8 @@ local log = require('nvim-magic._log')
 
 local ESC_FEEDKEY = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
 
+local MAX_COL = 2147483647
+
 function buffer.get_handles()
 	local winnr = vim.api.nvim_get_current_win()
 	local bufnr = vim.api.nvim_win_get_buf(winnr)
@@ -35,13 +37,6 @@ function buffer.get_visual_lines(bufnr)
 	if start_row == end_row and start_col == end_col then
 		return nil
 	end
-	log.fmt_debug(
-		'Visual bounds start_row=%s start_col=%s end_row=%s end_col=%s',
-		start_row,
-		start_col,
-		end_row,
-		end_col
-	)
 
 	local visual_lines = buffer.get_lines(bufnr, start_row, start_col, end_row, end_col)
 
@@ -57,6 +52,27 @@ function buffer.get_visual_start_end()
 
 	local _, start_row, start_col, _ = unpack(vim.fn.getpos("'<"))
 	local _, end_row, end_col, _ = unpack(vim.fn.getpos("'>"))
+
+	log.fmt_debug(
+		'Visual bounds start_row=%s start_col=%s end_row=%s end_col=%s',
+		start_row,
+		start_col,
+		end_row,
+		end_col
+	)
+
+	-- handle selections made in visual line mode (see :help getpos)
+	if end_col == MAX_COL then
+		local end_line = vim.api.nvim_buf_get_lines(0, end_row - 1, end_row, true)[1]
+		end_col = #end_line + 1
+		log.fmt_debug(
+			'Normalized visual bounds to start_row=%s start_col=%s end_row=%s end_col=%s',
+			start_row,
+			start_col,
+			end_row,
+			end_col
+		)
+	end
 
 	return start_row, start_col, end_row, end_col
 end
