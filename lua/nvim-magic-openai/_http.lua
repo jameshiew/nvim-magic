@@ -17,7 +17,7 @@ function ClientMethods:post(api_endpoint, json_body, api_key, success, fail)
 		headers = {
 			content_type = 'application/json',
 		},
-		return_job = true, -- TODO: currently requires a fork of plenary
+		return_job = true,
 	}
 
 	local id = random.generate_timestamped_string()
