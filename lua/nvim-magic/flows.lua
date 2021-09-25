@@ -134,7 +134,7 @@ function flows.suggest_alteration(backend, language)
 	end)
 end
 
-function flows.suggest(backend, language, tmpl)
+function flows.suggest(backend, tmpl, language)
 	assert(backend ~= nil, 'backend must be provided')
 	if not language then
 		language = buffer.get_filetype()
@@ -207,7 +207,7 @@ function flows.suggest(backend, language, tmpl)
 end
 
 function flows.suggest_docstring(backend, language)
-	flows.suggest(backend, language, templates.loaded['nvim-magic']['docstring'])
+	flows.suggest(backend, templates.loaded['nvim-magic']['docstring'], language)
 end
 
 return flows
