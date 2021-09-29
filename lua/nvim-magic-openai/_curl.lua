@@ -62,6 +62,8 @@ local F = require('plenary.functional')
 local J = require('plenary.job')
 local P = require('plenary.path')
 
+local log = require('nvim-magic-openai._log')
+
 local DEFAULT_TIMEOUT = 10000 -- milliseconds
 
 local function is_windows()
@@ -230,7 +232,8 @@ parse.request = function(opts)
 			opts.raw_body = b
 		end
 	end
-	return vim.tbl_flatten({
+
+	local preargs = vim.tbl_flatten({
 		'-sSL',
 		opts.dump,
 		opts.compressed and '--compressed' or nil,
@@ -241,12 +244,25 @@ parse.request = function(opts)
 		parse.data_body(opts.data),
 		parse.form(opts.form),
 		parse.file(opts.in_file),
-		parse.auth(opts.auth),
+	})
+	local postargs = vim.tbl_flatten({
 		opts.raw,
 		opts.output and { '-o', opts.output } or nil,
 		parse.url(opts.url, opts.query),
-	}),
-		opts
+	})
+	local nonauth_args = vim.deepcopy(preargs)
+	vim.list_extend(nonauth_args, postargs)
+	log.fmt_debug('Parsed request options nonauth_curl_args=%s', nonauth_args)
+
+	local args = preargs
+	vim.list_extend(
+		args,
+		vim.tbl_flatten({
+			parse.auth(opts.auth),
+		})
+	)
+	vim.list_extend(args, postargs)
+	return preargs, opts
 end
 
 -- Parse response ------------------------------------------
