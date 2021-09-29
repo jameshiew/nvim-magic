@@ -20,8 +20,11 @@ function completion.new_request(prompt, max_tokens, stops)
 end
 
 function completion.extract_from(res_body)
-	local decoded = vim.fn.json_decode(res_body)
-	assert(decoded ~= nil, "couldn't decode body")
+	local ok, decoded = pcall(vim.fn.json_decode, res_body)
+	if not ok then
+		local errmsg = decoded
+		error(string.format("couldn't decode response body errmsg=%s body=%s", errmsg, res_body))
+	end
 	assert(decoded.choices ~= nil, 'no choices returned')
 	return decoded.choices[1].text
 end
