@@ -9,7 +9,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     container:
-      image: registry.gitlab.com/jameshiew/toolbox/luaci:20210916-115155-f4045b
+      image: registry.gitlab.com/jameshiew/toolbox/images/luaci:421900a1cf6f2f3e577cf84ec1f72a74d30eee35e4088c28ccadcdba5918b7a3
     steps:
       - uses: actions/checkout@v2.3.4
       - run: |
