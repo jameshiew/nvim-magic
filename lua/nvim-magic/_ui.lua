@@ -29,9 +29,11 @@ function ui.pop_up(lines, filetype, border_text, keymaps)
 			filetype = filetype,
 			buftype = 'nofile',
 		},
+		win_options = {
+			number = true,
+		},
 	})
 	popup:mount()
-	vim.cmd([[set number]]) -- for some reason, using number=true in buf_options doesn't work so we do this instead
 	popup:on(event.BufLeave, function()
 		popup:unmount()
 	end)
