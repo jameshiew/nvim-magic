@@ -6,21 +6,21 @@ A pluggable framework for integrating AI code assistance into Neovim. The goals 
 
 ## Features
 
-### Completion
+### Completion (`<Leader>mcs`)
 
 <img 
 	alt='Example of Python script being generated from a docstring'
 	src='docs/gifs/completion.gif'
 	/>
 
-### Generating a docstring
+### Generating a docstring (`<Leader>mds`)
 
 <img 
 	alt='Example of Python function having a docstring generated'
 	src='docs/gifs/docstring.gif'
 	/>
 
-### Asking for an alteration
+### Asking for an alteration (`<Leader>mas`)
 
 <img 
 	alt='Example of Python function being altered'
@@ -31,18 +31,11 @@ A pluggable framework for integrating AI code assistance into Neovim. The goals 
 
 ### Prerequisites
 
-- Neovim (v0.5+)
+- latest stable version of Neovim (nightly may work as well)
 - `curl`
+- OpenAI API key
 
 ### Installation
-
-At the moment, only a backend for [OpenAI](https://beta.openai.com/) is implemented, which is bundled in this repo and used by default. Your API key should be made available to your Neovim session in an environment variable `OPENAI_API_KEY`. See [docs/openai.md](docs/openai.md) for more details.
-
-```shell
- export OPENAI_API_KEY='your-api-key-here'
-```
-
-Install like any other plugin. It is necessary to call `setup()` once see [docs/config.md](docs/config.md) if you want to override the default configuration e.g. to turn off the default keymaps.
 
 ```lua
 -- using packer.nvim
@@ -56,6 +49,14 @@ use({
 		'MunifTanjim/nui.nvim'
 	}
 })
+```
+
+See [docs/config.md](docs/config.md) if you want to override the default configuration e.g. to turn off the default keymaps, or use a different OpenAI engine than the default one (`davinci-codex`). Your OpenAI account might not have access to `davinci-codex` if it is not in the OpenAI Codex private beta (as of 2022-02-02).
+
+Your API key should be made available to your Neovim session in an environment variable `OPENAI_API_KEY`. See [docs/openai.md](docs/openai.md) for more details. Note that API calls may be charged for by OpenAI depending on the engine used.
+
+```shell
+ export OPENAI_API_KEY='your-api-key-here'
 ```
 
 ### Keymaps
