@@ -71,6 +71,6 @@ You can map your own key sequences to the predefined `<Plug>`s if you don't want
 | `<Plug>nvim-magic-suggest-alteration` | `<Leader>mss`  | visual | Ask for an alteration to the selected text |
 | `<Plug>nvim-magic-suggest-docstring`  | `<Leader>mds`  | visual | Generate a docstring                       |
 
-## Development
+## Development
 
 There is a [development container](https://containers.dev/) specified under the [`.devcontainer`](.devcontainer/) directory, that builds and installs the latest stable version of Neovim, and sets it up to use the local `nvim-magic` repo as a plugin.
