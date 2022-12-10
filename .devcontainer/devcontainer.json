@@ -1,0 +1,15 @@
+{
+  "name": "nvim-magic",
+  "dockerFile": "Dockerfile",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "sumneko.lua"
+      ]
+    }
+  },
+  "postCreateCommand": ".devcontainer/setup_nvim_config.sh"
+}
