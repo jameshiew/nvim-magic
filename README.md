@@ -1,3 +1,5 @@
+> :warning: This repository is no longer maintained. The plugin was last tested to work with Neovim v0.8.3 and OpenAI's API as it was on 14 February, 2023.
+
 # nvim-magic
 
 ![ci](https://github.com/jameshiew/nvim-magic/actions/workflows/ci.yml/badge.svg)
