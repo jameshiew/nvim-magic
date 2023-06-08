@@ -1,5 +1,7 @@
 > :warning: This repository is no longer maintained. The plugin was last tested to work with Neovim v0.8.3 and OpenAI's API as it was on 14 February, 2023.
 
+> 🍴 There is a fork with ChatGPT support at <https://github.com/Ricardicus/nvim-magic>
+
 # nvim-magic
 
 ![ci](https://github.com/jameshiew/nvim-magic/actions/workflows/ci.yml/badge.svg)
